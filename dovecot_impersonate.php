@@ -16,6 +16,7 @@ class dovecot_impersonate extends rcube_plugin {
     $this->add_hook('managesieve_connect', array($this, 'impersonate'));
     $this->add_hook('authenticate', array($this, 'login'));  
     $this->add_hook('sieverules_connect', array($this, 'impersonate_sieve'));  
+    $this->add_hook('smtp_connect', array($this, 'impersonate_smtp'));  
   }
   
   function login($data) {
@@ -45,6 +46,13 @@ class dovecot_impersonate extends rcube_plugin {
   function impersonate_sieve($data) {
     if(isset($_SESSION['plugin.dovecot_impersonate_master'])) {
       $data['username'] = $data['username'] . $_SESSION['plugin.dovecot_impersonate_master']; 
+    }
+    return($data);
+  }
+  
+  function impersonate_smtp($data) {
+    if(isset($_SESSION['plugin.dovecot_impersonate_master'])) {
+      $data['smtp_user'] = $data['smtp_user'] . $_SESSION['plugin.dovecot_impersonate_master']; 
     }
     return($data);
   }
